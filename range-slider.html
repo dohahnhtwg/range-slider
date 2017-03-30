@@ -73,18 +73,20 @@
       <div id="editableContainer">
         <paper-input id="startInput"
           class="inputs"
-          value="{{start}}"
+          value="[[start]]"
           label="start"
           type="number"
           min="[[min]]"
-          max="[[max]]"></paper-input>
+          max="[[max]]"
+          on-change="_startChanged"></paper-input>
         <paper-input id="endInput"
           class="inputs"
-          value="{{end}}"
+          value="[[end]]"
           label="end"
           type="number"
           min="[[min]]"
-          max="[[max]]"></paper-input>
+          max="[[max]]"
+          on-change="_startChanged"></paper-input>
         </div>
     </template>
   </template>
@@ -105,7 +107,8 @@
         },
         start: {
           type: Number,
-          value: 0
+          value: 0,
+          observer: "_startChanged"
         },
         end: {
           type: Number,
@@ -140,16 +143,18 @@
         switch(e.detail.state) {
           case 'start':
             this.x = e.detail.x;
+            this.isTracking = true;
             break;
           case 'track':
             var diffX = e.detail.x - this.x;
-            this._move(e.target, diffX)
-            if(this._knobOnTopOfEachOther(diffX, e.target)) {
+            if(this._knobsCrossed(diffX, e.target)) {
               this._move(this._getOtherKnob(e.target), diffX)
             }
+            this._move(e.target, diffX)
             this.x = e.detail.x;
             break;
           case 'end':
+            this.isTracking = false;
             break;
         }
       },
@@ -177,14 +182,14 @@
         return true;
       },
 
-      _knobOnTopOfEachOther: function(distance, draggingKnob) {
+      _knobsCrossed: function(distance, draggingKnob) {
         if(draggingKnob.id === "leftKnob") {
-          if(draggingKnob.offsetLeft + distance >= this.$.rightKnob.offsetLeft) {
+          if(draggingKnob.offsetLeft + distance > this.$.rightKnob.offsetLeft) {
             return true;
           }
           return false;
         } else {
-          if(draggingKnob.offsetLeft + distance <= this.$.leftKnob.offsetLeft) {
+          if(draggingKnob.offsetLeft + distance < this.$.leftKnob.offsetLeft) {
             return true;
           }
           return false;
@@ -212,6 +217,17 @@
           return this._pixelToInt(propertyValue);
         } else {
           return propertyValue;
+        }
+      },
+
+      _startChanged: function(e) {
+        if(!this.isTracking && e.target) {
+          var element = e.currentTarget.id === "startInput" ? this.$.leftKnob : this.$.rightKnob;
+          var diffX = e.target.value*this.markerGap - (element.offsetLeft+this._getStyleProp(element, "width")/2);
+          if(this._knobsCrossed(diffX, element)) {
+            this._move(this._getOtherKnob(element), diffX)
+          }
+          this._move(element, diffX);
         }
       }
 
