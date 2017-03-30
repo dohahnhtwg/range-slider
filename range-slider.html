@@ -1,4 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="/bower_components/paper-styles/color.html">
 
 <!--
 `range-slider`
@@ -9,12 +12,12 @@
 
 <dom-module id="range-slider">
   <template>
-    <style>
+    <style include="iron-flex">
       :host {
         --knob-size: 10px;
-        --slider-height: 5px;
+        --slider-height: 2px;
 
-        display: block;
+        width: 200px;
         user-select: none;          /* not selectable */
         -webkit-user-select: none;  /* Chrome all / Safari all */
         -moz-user-select: none;     /* Firefox all */
@@ -23,9 +26,8 @@
       #slider {
         pointer-events: none;
         position: relative;
-        width: 200px;
         height: var(--slider-height);
-        background-color: LightGrey;
+        background-color: var(--paper-grey-400);
         border-radius: 99px;
         -webkit-border-radius: 99px;
         -moz-border-radius: 99px;
@@ -41,16 +43,24 @@
         border-radius: 25px;
         -webkit-border-radius: 25px;
         -moz-border-radius: 25px;
-        background: blue;
+        background: var(--google-blue-700);
       }
       #absoluteValueBar {
         position: absolute;
-        background-color: Blue;
+        background-color: var(--google-blue-700);
         height: var(--slider-height);
 
         border-radius: 99px;
         -webkit-border-radius: 99px;
         -moz-border-radius: 99px;
+      }
+      .inputs {
+        width: 40px;
+        margin-left: 5px;
+      }
+      #editableContainer {
+        @apply(--layout-horizontal);
+        @apply(--layout-justified);
       }
     </style>
 
@@ -59,10 +69,24 @@
       <span id="absoluteValueBar"></span>
       <span id="rightKnob" class="knobs" on-track="_handleTrack"></span>
     </div>
-    <div>Start: [[start]]</div>
-    <div>End: [[end]]</div>
-    <div>Min: [[min]]</div>
-    <div>Max: [[max]]</div>
+    <template is="dom-if" if="[[editable]]">
+      <div id="editableContainer">
+        <paper-input id="startInput"
+          class="inputs"
+          value="{{start}}"
+          label="start"
+          type="number"
+          min="[[min]]"
+          max="[[max]]"></paper-input>
+        <paper-input id="endInput"
+          class="inputs"
+          value="{{end}}"
+          label="end"
+          type="number"
+          min="[[min]]"
+          max="[[max]]"></paper-input>
+        </div>
+    </template>
   </template>
 
   <script>
@@ -86,6 +110,10 @@
         end: {
           type: Number,
           value: 10
+        },
+        editable: {
+          type: Boolean,
+          value: false
         }
       },
 
@@ -132,7 +160,6 @@
           if(element.id==="leftKnob") {
             this.$.absoluteValueBar.style.left = this.$.leftKnob.style.left;
             this.$.absoluteValueBar.style.width = this._intToPixel(this._getStyleProp(this.$.absoluteValueBar, "width") - distance);
-            console.log(this.markerGap);
             this.start = Math.round((this._getStyleProp(element, "left") + this._getStyleProp(element, "width")/2)/this.markerGap);
           } else {
             this.$.absoluteValueBar.style.width = this._intToPixel(this._getStyleProp(this.$.absoluteValueBar, "width") + distance);
