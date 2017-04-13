@@ -74,19 +74,19 @@
         <paper-input id="startInput"
           class="inputs"
           value="[[start]]"
-          label="start"
+          label="min"
           type="number"
           min="[[min]]"
           max="[[max]]"
-          on-change="_startChanged"></paper-input>
+          on-change="_inputChanged"></paper-input>
         <paper-input id="endInput"
           class="inputs"
           value="[[end]]"
-          label="end"
+          label="max"
           type="number"
           min="[[min]]"
           max="[[max]]"
-          on-change="_startChanged"></paper-input>
+          on-change="_inputChanged"></paper-input>
         </div>
     </template>
   </template>
@@ -108,11 +108,12 @@
         start: {
           type: Number,
           value: 0,
-          observer: "_startChanged"
+          observer: '_startChanged'
         },
         end: {
           type: Number,
-          value: 10
+          value: 10,
+          observer: '_endChanged'
         },
         editable: {
           type: Boolean,
@@ -220,7 +221,7 @@
         }
       },
 
-      _startChanged: function(e) {
+      _inputChanged: function(e) {
         if(!this.isTracking && e.target) {
           var element = e.currentTarget.id === "startInput" ? this.$.leftKnob : this.$.rightKnob;
           var diffX = e.target.value*this.markerGap - (element.offsetLeft+this._getStyleProp(element, "width")/2);
@@ -229,6 +230,14 @@
           }
           this._move(element, diffX);
         }
+      },
+
+      _startChanged: function(e) {
+        this.fire("minChanged", e);
+      },
+
+      _endChanged: function(e) {
+        this.fire("maxChanged", e);
       }
 
     });
