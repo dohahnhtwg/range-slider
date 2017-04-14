@@ -99,11 +99,13 @@
       properties: {
         min: {
           type: Number,
-          value: 0
+          value: 0,
+          observer: "_minMaxChanged"
         },
         max: {
           type: Number,
-          value: 10
+          value: 10,
+          observer: "_minMaxChanged"
         },
         start: {
           type: Number,
@@ -130,6 +132,10 @@
       },
 
       attached: function() {
+        this._init();
+      },
+
+      _init: function() {
         this.markerGap = this._getStyleProp(this.$.slider, "width")/(this.max-this.min);
         var rightLimit = this._getStyleProp(this.$.slider, "width");
         var rightKnobWidth = this._getStyleProp(this.$.rightKnob, "width");
@@ -233,11 +239,23 @@
       },
 
       _startChanged: function(e) {
-        this.fire("minChanged", e);
+        this.fire("startChanged", e);
       },
 
       _endChanged: function(e) {
-        this.fire("maxChanged", e);
+        this.fire("endChanged", e);
+      },
+
+      _minMaxChanged: function() {
+        if(this.max <= this.min) {
+          console.warn("Illegal argument for min max");
+          this.max = 10;
+          this.min = 0;
+        } else {
+          this.start = this.min;
+          this.end = this.max;
+          this._init();
+        }
       }
 
     });
