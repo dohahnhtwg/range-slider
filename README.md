@@ -1,6 +1,18 @@
 # \<range-slider\>
 
+The range-slider is a simple slider with two knobs to set a value
 
+```
+<range-slider
+    min="0"
+    max="10"
+    start="0"
+    end="10"
+    editable></range-slider>
+```
+
+Min and max are the minimum and maximum amount users can set. While start and end
+are the actual values. With editable users can optionally set start and end with a input.
 
 ## Install the Polymer-CLI
 
