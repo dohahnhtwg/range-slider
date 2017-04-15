@@ -182,7 +182,8 @@ are the actual values. With editable users can optionally set start and end with
       },
 
       _handleTrack: function(e) {
-        e.stopPropagation();
+        if(e.stopPropagation) e.stopPropagation();
+        if(e.preventDefault) e.preventDefault();
         switch(e.detail.state) {
           case 'start':
             this.x = e.detail.x;
