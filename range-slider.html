@@ -117,22 +117,24 @@ are the actual values. With editable users can optionally set start and end with
        * @event endChanged
        */
 
+       observers: [
+         '_updateSlider(min, max)'
+       ],
+
       properties: {
         /**
         * The minimal amount start can take.
         */
         min: {
           type: Number,
-          value: 0,
-          observer: "_minMaxChanged"
+          value: 0
         },
         /**
         * The maximal amount end can take.
         */
         max: {
           type: Number,
-          value: 10,
-          observer: "_minMaxChanged"
+          value: 10
         },
         /**
          * The actual start value.
@@ -161,13 +163,12 @@ are the actual values. With editable users can optionally set start and end with
 
       ready: function() {
         if(this.max <= this.min) {
-          console.warn("Illegal argument for min max");
-          this.max = 10;
-          this.min = 0;
+          throw new RangeError(this.is + ": max greater than min is not allowed")
         }
       },
 
       attached: function() {
+        console.log("attached");
         this._init();
       },
 
@@ -209,10 +210,10 @@ are the actual values. With editable users can optionally set start and end with
           if(element.id==="leftKnob") {
             this.$.absoluteValueBar.style.left = this.$.leftKnob.style.left;
             this.$.absoluteValueBar.style.width = this._intToPixel(this._getStyleProp(this.$.absoluteValueBar, "width") - distance);
-            this.start = Math.round((this._getStyleProp(element, "left") + this._getStyleProp(element, "width")/2)/this.markerGap);
+            this.start = Math.round((this._getStyleProp(element, "left") + this._getStyleProp(element, "width")/2)/this.markerGap) + this.min;
           } else {
             this.$.absoluteValueBar.style.width = this._intToPixel(this._getStyleProp(this.$.absoluteValueBar, "width") + distance);
-            this.end =  Math.round((this._getStyleProp(element, "left") + this._getStyleProp(element, "width")/2)/this.markerGap);
+            this.end =  Math.round((this._getStyleProp(element, "left") + this._getStyleProp(element, "width")/2)/this.markerGap)  + this.min;
           }
         }
       },
@@ -275,24 +276,40 @@ are the actual values. With editable users can optionally set start and end with
         }
       },
 
-      _startChanged: function(e) {
-        this.fire("startChanged", e);
+      _startChanged: function(newValue) {
+        this.fire("startChanged", newValue);
       },
 
-      _endChanged: function(e) {
-        this.fire("endChanged", e);
+      _endChanged: function(newValue) {
+        this.fire("endChanged", newValue);
       },
 
-      _minMaxChanged: function() {
-        if(this.max <= this.min) {
-          console.warn("Illegal argument for min max");
-          this.max = 10;
-          this.min = 0;
-        } else {
-          this.start = this.min;
-          this.end = this.max;
-          this._init();
+      _updateSlider: function(min, max) {
+        console.log("_updateSlider");
+        if(!this.start || !this.end) {
+          // start or end is not initialized yet
+          return;
         }
+        if(max <= min) {
+          throw new RangeError(this.is + ": max greater than min is not allowed")
+        } else {
+          if(this._isVlaueInRange(this.start)) {
+            if(this._isVlaueInRange(this.end)) {
+              this._init();
+            } else {
+              this.end = max;
+            }
+          } else {
+            this.start = min;
+          }
+        }
+      },
+
+      _isVlaueInRange: function(value) {
+        if(value >= this.min && value <= this.max) {
+          return true;
+        }
+        return false;
       }
 
     });

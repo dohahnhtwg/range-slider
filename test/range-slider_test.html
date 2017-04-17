@@ -17,13 +17,30 @@
         <range-slider></range-slider>
       </template>
     </test-fixture>
+    <test-fixture id="basicWithAttributes">
+      <template>
+        <range-slider min="500" max="1000" start="501" end="999"></range-slider>
+      </template>
+    </test-fixture>
 
     <script>
       suite('range-slider', function() {
         test('instantiating the element works', function() {
           var element = fixture('basic');
           assert.equal(element.is, 'range-slider');
+          assert.equal(element.min, 0);
+          assert.equal(element.max, 10);
+          assert.equal(element.start, 0);
+          assert.equal(element.end, 10);
         });
+        test('instantiating the element with attributes works', function() {
+          var element = fixture('basicWithAttributes');
+          assert.equal(element.is, 'range-slider');
+          assert.equal(element.min, 500);
+          assert.equal(element.max, 1000);
+          assert.equal(element.start, 501);
+          assert.equal(element.end, 999);
+        })
       });
     </script>
   </body>
