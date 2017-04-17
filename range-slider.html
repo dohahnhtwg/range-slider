@@ -321,7 +321,7 @@ are the actual values. With editable users can optionally set start and end with
       },
 
       _moveKnobToNewValue(knob, value) {
-        var diffX = value*this.markerGap - (knob.offsetLeft+this._getStyleProp(knob, "width")/2);
+        var diffX = (value-this.min)*this.markerGap - (knob.offsetLeft+this._getStyleProp(knob, "width")/2);
         if(this._knobsCrossed(diffX, knob)) {
           var otherKnob = this._getOtherKnob(knob);
           this._move(otherKnob, (knob.offsetLeft + diffX) - otherKnob.offsetLeft)
