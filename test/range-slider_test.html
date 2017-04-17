@@ -22,6 +22,11 @@
         <range-slider min="500" max="1000" start="501" end="999"></range-slider>
       </template>
     </test-fixture>
+    <test-fixture id="basicWithExceptions">
+      <template>
+        <range-slider min="15" max="10" start="15" end="10"></range-slider>
+      </template>
+    </test-fixture>
 
     <script>
       suite('range-slider', function() {
@@ -40,6 +45,12 @@
           assert.equal(element.max, 1000);
           assert.equal(element.start, 501);
           assert.equal(element.end, 999);
+        })
+        test('set min greater than max should throw an exception', function() {
+          var element = fixture('basic');
+          assert.throws(function() {
+            element.min = 15;
+          }, RangeError)
         })
       });
     </script>

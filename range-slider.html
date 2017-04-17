@@ -169,6 +169,7 @@ are the actual values. With editable users can optionally set start and end with
 
       attached: function() {
         console.log("attached");
+        this._updateSlider(this.min, this.max);
         this._init();
       },
 
@@ -285,13 +286,13 @@ are the actual values. With editable users can optionally set start and end with
       },
 
       _updateSlider: function(min, max) {
-        console.log("_updateSlider");
-        if(!this.start || !this.end) {
+        if(this.start == null || this.end == null) {
+          console.log(this.start + " < " + this.end);
           // start or end is not initialized yet
           return;
         }
         if(max <= min) {
-          throw new RangeError(this.is + ": max greater than min is not allowed")
+          throw new RangeError(this.is + ": max greater than min is not allowed");
         } else {
           if(this._isVlaueInRange(this.start)) {
             if(this._isVlaueInRange(this.end)) {
