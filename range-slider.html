@@ -168,7 +168,7 @@ are the actual values. With editable users can optionally set start and end with
       },
 
       attached: function() {
-        console.log("attached");
+        this.isAttached = true;
         this._updateSlider(this.min, this.max);
         this._init();
       },
@@ -268,26 +268,33 @@ are the actual values. With editable users can optionally set start and end with
 
       _inputChanged: function(e) {
         if(!this.isTracking && e.target) {
-          var element = e.currentTarget.id === "startInput" ? this.$.leftKnob : this.$.rightKnob;
-          var diffX = e.target.value*this.markerGap - (element.offsetLeft+this._getStyleProp(element, "width")/2);
-          if(this._knobsCrossed(diffX, element)) {
-            this._move(this._getOtherKnob(element), diffX)
-          }
-          this._move(element, diffX);
+          var knob = e.currentTarget.id === "startInput" ? this.$.leftKnob : this.$.rightKnob;
+          this._moveKnobToNewValue(knob, e.target.value);
         }
       },
 
-      _startChanged: function(newValue) {
+      _startChanged: function(newValue, oldValue) {
+        if(!this._isVlaueInRange(newValue)) {
+          throw new RangeError(this.is + ": start is not in range");
+        }
+        if(!this.isTracking && this.isAttached) {
+          this._moveKnobToNewValue(this.$.leftKnob, newValue);
+        }
         this.fire("startChanged", newValue);
       },
 
       _endChanged: function(newValue) {
+        if(!this._isVlaueInRange(newValue)) {
+          throw new RangeError(this.is + ": end is not in range");
+        }
+        if(!this.isTracking && this.isAttached) {
+          this._moveKnobToNewValue(this.$.rightKnob, newValue);
+        }
         this.fire("endChanged", newValue);
       },
 
       _updateSlider: function(min, max) {
         if(this.start == null || this.end == null) {
-          console.log(this.start + " < " + this.end);
           // start or end is not initialized yet
           return;
         }
@@ -311,6 +318,15 @@ are the actual values. With editable users can optionally set start and end with
           return true;
         }
         return false;
+      },
+
+      _moveKnobToNewValue(knob, value) {
+        var diffX = value*this.markerGap - (knob.offsetLeft+this._getStyleProp(knob, "width")/2);
+        if(this._knobsCrossed(diffX, knob)) {
+          var otherKnob = this._getOtherKnob(knob);
+          this._move(otherKnob, (knob.offsetLeft + diffX) - otherKnob.offsetLeft)
+        }
+        this._move(knob, diffX);
       }
 
     });

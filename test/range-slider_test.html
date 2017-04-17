@@ -45,13 +45,64 @@
           assert.equal(element.max, 1000);
           assert.equal(element.start, 501);
           assert.equal(element.end, 999);
-        })
-        test('set min greater than max should throw an exception', function() {
+        });
+        test('set min greater than max should throw an RangeException', function() {
           var element = fixture('basic');
           assert.throws(function() {
             element.min = 15;
           }, RangeError)
-        })
+        });
+        test('set max smaller than min should throw an RangeException', function() {
+          var element = fixture('basic');
+          assert.throws(function() {
+            element.max = -4;
+          }, RangeError)
+        });
+        test('set start outside of range should throw an RangeException', function() {
+          var element = fixture('basic');
+          assert.throws(function() {
+            element.start = -4;
+          }, RangeError)
+        });
+        test('set end outside of range should throw an RangeException', function() {
+          var element = fixture('basic');
+          assert.throws(function() {
+            element.end = 20;
+          }, RangeError)
+        });
+        test('set max smaller than end should adjust end', function() {
+          var element = fixture('basic');
+          element.max = 5;
+          assert.equal(element.end, 5)
+        });
+        test('set min greater than start should adjust start', function() {
+          var element = fixture('basic');
+          element.min = 5;
+          assert.equal(element.start, 5)
+        });
+        test('a chnage to start should trigger a startChanged event with new value', function(done) {
+          var element = fixture('basic');
+          element.addEventListener('startChanged', function(e) {
+            assert.equal(e.detail, 5);
+            done();
+          })
+          element.start = 5;
+        });
+        test('a chnage to end should trigger a endChanged event with new value', function(done) {
+          var element = fixture('basic');
+          element.addEventListener('endChanged', function(e) {
+            assert.equal(e.detail, 5);
+            done();
+          })
+          element.end = 5;
+        });
+        test('set end smaller as start should adjust start', function() {
+          var element = fixture('basic');
+          element.start = 5;
+          element.end = 1;
+          assert.equal(element.end, 1);
+          assert.equal(element.start, 1);
+        });
       });
     </script>
   </body>
