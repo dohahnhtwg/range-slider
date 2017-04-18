@@ -1,0 +1,31 @@
+{
+  "name": "range-slider",
+  "version": "1.0.0",
+  "description": "A simple range slider",
+  "main": "range-slider.html",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "web-component-tester": "^5.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "polymer test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dohahnhtwg/range-slider.git"
+  },
+  "keywords": [
+    "range",
+    "slider",
+    "polymer"
+  ],
+  "author": "dohahn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dohahnhtwg/range-slider/issues"
+  },
+  "homepage": "https://github.com/dohahnhtwg/range-slider#readme"
+}
