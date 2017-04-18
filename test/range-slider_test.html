@@ -22,9 +22,9 @@
         <range-slider min="500" max="1000" start="501" end="999"></range-slider>
       </template>
     </test-fixture>
-    <test-fixture id="basicWithExceptions">
+    <test-fixture id="editable">
       <template>
-        <range-slider min="15" max="10" start="15" end="10"></range-slider>
+        <range-slider min="50" max="100" start="50" end="100" editable></range-slider>
       </template>
     </test-fixture>
 
@@ -96,12 +96,35 @@
           })
           element.end = 5;
         });
-        test('set end smaller as start should adjust start', function() {
+        test('set end smaller than start should adjust start', function() {
           var element = fixture('basic');
           element.start = 5;
           element.end = 1;
           assert.equal(element.end, 1);
           assert.equal(element.start, 1);
+        });
+        test('set start greater than start should adjust end', function() {
+          var element = fixture('basic');
+          element.end = 5;
+          element.start = 9;
+          assert.equal(element.end, 9);
+          assert.equal(element.start, 9);
+        });
+        test('should display editable inputs', function(done) {
+          var element = fixture('editable');
+          flush(function() {
+            expect(document.getElementById('startInput')).to.be.visible;
+            expect(document.getElementById('endInput')).to.be.visible;
+            done();
+          });
+        });
+        test('should not display editable inputs', function(done) {
+          var element = fixture('basic');
+          flush(function() {
+            expect(document.getElementById('startInput')).not.to.be.visible;
+            expect(document.getElementById('endInput')).not.to.be.visible;
+            done();
+          });
         });
       });
     </script>
