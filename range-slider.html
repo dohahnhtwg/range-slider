@@ -44,7 +44,7 @@ are the actual values. With editable users can optionally set start and end with
       .knobs {
         position: absolute;
         pointer-events: auto;
-        width: 10px;
+        width: var(--knob-size);
         height: var(--knob-size);
         top: 50%;
         margin-top: calc(-1*var(--knob-size)/2);
@@ -53,6 +53,16 @@ are the actual values. With editable users can optionally set start and end with
         -webkit-border-radius: 25px;
         -moz-border-radius: 25px;
         background: var(--google-blue-700);
+
+        transition-property: width, height, margin-top;
+        transition-duration: 0.4s, 0.4s, 0.4s;
+      }
+
+      .knobs:hover,
+      .knobs.tracking {
+        width: calc(var(--knob-size) * 1.3);
+        height: calc(var(--knob-size) * 1.3);
+        margin-top: calc(-1 * var(--knob-size) * 1.3 / 2);
       }
       #absoluteValueBar {
         position: absolute;
@@ -187,8 +197,10 @@ are the actual values. With editable users can optionally set start and end with
         if(e.preventDefault) e.preventDefault();
         switch(e.detail.state) {
           case 'start':
+            console.log("start");
             this.x = e.detail.x;
             this.isTracking = true;
+            this._inflateKnob(e.target);
             break;
           case 'track':
             var diffX = e.detail.x - this.x;
@@ -200,8 +212,17 @@ are the actual values. With editable users can optionally set start and end with
             break;
           case 'end':
             this.isTracking = false;
+            this._deflateKnob(e.target);
             break;
         }
+      },
+
+      _inflateKnob: function(knobEle) {
+        knobEle.classList.add("tracking");
+      },
+
+      _deflateKnob: function(knobEle) {
+        knobEle.classList.remove("tracking");
       },
 
       _move: function(element, distance) {
