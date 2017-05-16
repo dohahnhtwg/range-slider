@@ -10,6 +10,7 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../paper-slider/paper-slider.html">
     <link rel="import" href="../range-slider.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -27,6 +28,13 @@
       <demo-snippet>
         <template>
           <range-slider min="5" max="15" start="6" end="10" editable></range-slider>
+        </template>
+      </demo-snippet>
+      <h3>Comparison to Polymer paper-slider</h3>
+      <demo-snippet>
+        <template>
+          <range-slider style="margin-left: 30px; margin-right: 16px;" min="5" max="15" start="8" end="13"></range-slider>
+          <paper-slider style="width: 390px" min="5" max="15" value="8"></paper-slider>
         </template>
       </demo-snippet>
     </div>

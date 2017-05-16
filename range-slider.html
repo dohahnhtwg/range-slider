@@ -84,9 +84,21 @@ are the actual values. With editable users can optionally set start and end with
     </style>
 
     <div id="slider">
-      <span id="leftKnob" class="knobs" on-track="_handleTrack"></span>
+      <span id="leftKnob"
+        class="knobs"
+        on-track="_handleTrack"
+        role="slider"
+        aria-valuemin="[[min]]"
+        aria-valuemax="[[max]]"
+        aria-valuenow="[[start]]"></span>
       <span id="absoluteValueBar"></span>
-      <span id="rightKnob" class="knobs" on-track="_handleTrack"></span>
+      <span id="rightKnob"
+        class="knobs"
+        on-track="_handleTrack"
+        role="slider"
+        aria-valuemin="[[min]]"
+        aria-valuemax="[[max]]"
+        aria-valuenow="[[end]]"></span>
     </div>
     <template is="dom-if" if="[[editable]]">
       <div id="editableContainer">
